@@ -31,7 +31,19 @@ export const AuthProvider = ({ children }) => {
     const response = await axios.post('/auth/login', { username, password });
     setToken(response.data.accessToken);
     setUser(response.data);
-    navigate('/dashboard');
+    
+    // Check for an external redirect parameter
+    const params = new URLSearchParams(window.location.search);
+    const redirectUrl = params.get('redirect');
+    
+    if (redirectUrl) {
+      // Append token to the external URL
+      const hasQueryParams = redirectUrl.includes('?');
+      window.location.href = `${redirectUrl}${hasQueryParams ? '&' : '?'}token=${response.data.accessToken}`;
+    } else {
+      navigate('/dashboard');
+    }
+    
     return response.data;
   };
 

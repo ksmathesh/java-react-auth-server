@@ -18,7 +18,7 @@ const Signup = () => {
     try {
       await signup(username, email, password);
       setSuccess('Account created successfully! Redirecting to login...');
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate(`/login${window.location.search}`), 2000);
     } catch (err) {
       setError(err.response?.data?.message || 'Error creating account. Username or email might be taken.');
     }
@@ -67,7 +67,7 @@ const Signup = () => {
       {success && <div className="message success">{success}</div>}
       
       <div className="link-text">
-        Already have an account? <Link to="/login">Sign in</Link>
+        Already have an account? <Link to={`/login${window.location.search}`}>Sign in</Link>
       </div>
     </div>
   );

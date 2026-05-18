@@ -50,7 +50,7 @@ const Login = () => {
       {error && <div className="message error">{error}</div>}
       
       <div className="link-text">
-        Don't have an account? <Link to="/signup">Sign up</Link>
+        Don't have an account? <Link to={`/signup${window.location.search}`}>Sign up</Link>
       </div>
     </div>
   );
