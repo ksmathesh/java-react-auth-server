@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,13 +15,18 @@ const Login = () => {
     try {
       await login(username, password);
     } catch (err) {
-      setError('Invalid username or password');
+      const errorMsg = err.response?.data?.message || 'Invalid username or password';
+      setError(errorMsg);
+      
+      if (errorMsg.includes('not verified')) {
+         setTimeout(() => navigate(`/verify-otp${window.location.search}`), 1500);
+      }
     }
   };
 
   return (
     <div className="app-container">
-      <h2>Welcome Back</h2>
+      <h2>Welcome</h2>
       <p className="subtitle">Enter your credentials to access your account</p>
       
       <form onSubmit={handleSubmit}>
@@ -49,6 +55,9 @@ const Login = () => {
       
       {error && <div className="message error">{error}</div>}
       
+      <div className="link-text">
+        <Link to={`/forgot-password${window.location.search}`}>Forgot Password?</Link>
+      </div>
       <div className="link-text">
         Don't have an account? <Link to={`/signup${window.location.search}`}>Sign up</Link>
       </div>

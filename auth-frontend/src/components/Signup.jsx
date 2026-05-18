@@ -17,8 +17,10 @@ const Signup = () => {
     setSuccess('');
     try {
       await signup(username, email, password);
-      setSuccess('Account created successfully! Redirecting to login...');
-      setTimeout(() => navigate(`/login${window.location.search}`), 2000);
+      setSuccess('Account created! Check your email for the OTP...');
+      const params = new URLSearchParams(window.location.search);
+      params.set('email', email);
+      setTimeout(() => navigate(`/verify-otp?${params.toString()}`), 2000);
     } catch (err) {
       setError(err.response?.data?.message || 'Error creating account. Username or email might be taken.');
     }

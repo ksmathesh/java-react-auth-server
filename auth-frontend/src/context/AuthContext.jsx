@@ -52,6 +52,21 @@ export const AuthProvider = ({ children }) => {
     return response.data;
   };
 
+  const verifyOtp = async (email, otp) => {
+    const response = await axios.post('/auth/verify-otp', { email, otp });
+    return response.data;
+  };
+
+  const forgotPassword = async (email) => {
+    const response = await axios.post('/auth/forgot-password', { email });
+    return response.data;
+  };
+
+  const resetPassword = async (email, otp, newPassword) => {
+    const response = await axios.post('/auth/reset-password', { email, otp, newPassword });
+    return response.data;
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -59,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, login, signup, verifyOtp, forgotPassword, resetPassword, logout }}>
       {children}
     </AuthContext.Provider>
   );

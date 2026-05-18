@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #0f172a;
-  --surface-color: #1e293b;
-  --primary-color: #3b82f6;
-  --primary-hover: #2563eb;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: #334155;
-  --error-color: #ef4444;
+  --bg-color: #fcefd6; /* Light biscuit color */
+  --surface-color: #ffffff; /* White card */
+  --primary-color: #ef4444; /* Red button */
+  --primary-hover: #dc2626; /* Darker red */
+  --text-main: #1f2937; /* Dark text for readability */
+  --text-muted: #6b7280; /* Gray text for labels */
+  --border-color: #e5e7eb; /* Light gray borders */
+  --error-color: #dc2626;
   --success-color: #10b981;
 }
 
@@ -35,7 +35,7 @@ body {
   padding: 2rem;
   background-color: var(--surface-color);
   border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border-color);
   animation: fadeIn 0.5s ease-out;
 }
@@ -48,7 +48,7 @@ h1, h2 {
   text-align: center;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  background: linear-gradient(to right, #60a5fa, #3b82f6);
+  background: linear-gradient(to right, #ef4444, #b91c1c);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -75,7 +75,7 @@ label {
 input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background-color: #0f172a;
+  background-color: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-main);
@@ -86,7 +86,7 @@ input {
 input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
 button {
@@ -146,12 +146,12 @@ button:active {
 }
 
 .link-text a:hover {
-  color: #60a5fa;
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
 .data-card {
-  background-color: #0f172a;
+  background-color: #f9fafb;
   padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);

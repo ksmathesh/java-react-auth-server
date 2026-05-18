@@ -20,6 +20,13 @@ public class User {
     private String password;
 
     private String role;
+    
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isVerified = false;
+    
+    private String otp;
+    
+    private java.time.LocalDateTime otpExpiryTime;
 
     public User() {}
 
@@ -28,6 +35,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = "ROLE_USER"; // Default role
+        this.isVerified = false;
     }
 
     public Long getId() { return id; }
@@ -40,4 +48,10 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean verified) { isVerified = verified; }
+    public String getOtp() { return otp; }
+    public void setOtp(String otp) { this.otp = otp; }
+    public java.time.LocalDateTime getOtpExpiryTime() { return otpExpiryTime; }
+    public void setOtpExpiryTime(java.time.LocalDateTime otpExpiryTime) { this.otpExpiryTime = otpExpiryTime; }
 }
