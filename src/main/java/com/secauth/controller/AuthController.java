@@ -134,6 +134,13 @@ public class AuthController {
         user.setOtpExpiryTime(null);
         userRepository.save(user);
 
+        try {
+            emailService.sendWelcomeEmail(user.getEmail(), user.getUsername());
+        } catch (Exception e) {
+            System.err.println("Failed to send welcome email to " + user.getEmail() + " : " + e.getMessage());
+            // We don't fail the verification if the welcome email fails
+        }
+
         return ResponseEntity.ok(new MessageResponse("Account verified successfully! You can now log in."));
     }
 
@@ -157,6 +164,67 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(new MessageResponse("OTP sent to your email for password reset."));
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<?> resendOtp(@Valid @RequestBody com.secauth.payload.request.ResendOtpRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: User not found!"));
+        }
+
+        String otp = emailService.generateOTP();
+        user.setOtp(otp);
+        user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), otp);
+        } catch (Exception e) {
+            System.err.println("Failed to send email to " + user.getEmail() + " : " + e.getMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Error: Failed to resend OTP email."));
+        }
+
+        return ResponseEntity.ok(new MessageResponse("A new OTP has been sent to your email."));
+    }
+
+    @PostMapping("/update-unverified-email")
+    public ResponseEntity<?> updateUnverifiedEmail(@Valid @RequestBody com.secauth.payload.request.UpdateEmailRequest request) {
+        User user = userRepository.findByUsername(request.getUsername()).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: User not found!"));
+        }
+
+        // Extremely important security check: Verify the password matches
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body(new MessageResponse("Error: Invalid password. Security verification failed."));
+        }
+
+        // Cannot change email if already verified
+        if (user.isVerified()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Account is already verified."));
+        }
+
+        // Check if new email is taken by someone else
+        if (!user.getEmail().equals(request.getNewEmail()) && userRepository.existsByEmail(request.getNewEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+        user.setEmail(request.getNewEmail());
+        
+        String otp = emailService.generateOTP();
+        user.setOtp(otp);
+        user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), otp);
+        } catch (Exception e) {
+            System.err.println("Failed to send email to " + user.getEmail() + " : " + e.getMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Error: Failed to send OTP to new email."));
+        }
+
+        return ResponseEntity.ok(new MessageResponse("Email updated successfully. A new OTP has been sent."));
     }
 
     @PostMapping("/reset-password")

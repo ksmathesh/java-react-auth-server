@@ -42,4 +42,29 @@ public class EmailService {
         helper.setText(htmlContent, true);
         mailSender.send(message);
     }
+
+    public void sendWelcomeEmail(String toEmail, String username) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(toEmail);
+        helper.setSubject("Welcome to SecAuth! 🎉");
+        
+        String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #fcefd6;'>"
+                + "<div style='background-color: #ffffff; padding: 30px; border-radius: 8px;'>"
+                + "<h2 style='color: #ef4444; text-align: center;'>Account Verified Successfully!</h2>"
+                + "<p style='font-size: 16px; color: #1f2937;'>Hi <strong>" + username + "</strong>,</p>"
+                + "<p style='font-size: 16px; color: #1f2937;'>Welcome to the family! Your email has been successfully verified, and your account is now fully active.</p>"
+                + "<p style='font-size: 16px; color: #1f2937;'>You can now log in and explore all the secure features we have to offer.</p>"
+                + "<div style='text-align: center; margin: 30px 0;'>"
+                + "<a href='http://localhost:5173/login' style='background-color: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;'>Go to Dashboard</a>"
+                + "</div>"
+                + "<p style='font-size: 14px; color: #6b7280;'>If you have any questions, feel free to reply to this email.</p>"
+                + "<p style='font-size: 16px; color: #1f2937;'>Best regards,<br><strong>The SecAuth Team</strong></p>"
+                + "</div>"
+                + "</div>";
+
+        helper.setText(htmlContent, true);
+        mailSender.send(message);
+    }
 }

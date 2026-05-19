@@ -10,7 +10,8 @@ const VerifyOTP = () => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const { verifyOtp } = useContext(AuthContext);
+  const [isResending, setIsResending] = useState(false);
+  const { verifyOtp, resendOtp } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,6 +28,24 @@ const VerifyOTP = () => {
       setTimeout(() => navigate(`/login${location.search}`), 2000);
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid or expired OTP.');
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (!email) {
+      setError('Please provide your email address to resend OTP.');
+      return;
+    }
+    setError('');
+    setSuccess('');
+    setIsResending(true);
+    try {
+      await resendOtp(email);
+      setSuccess('A new OTP has been sent to your email!');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to resend OTP.');
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -76,6 +95,30 @@ const VerifyOTP = () => {
       
       {error && <div className="message error">{error}</div>}
       {success && <div className="message success">{success}</div>}
+      
+      <div className="link-text" style={{ marginTop: '1.5rem' }}>
+        Didn't receive the code?{' '}
+        <button 
+          type="button" 
+          onClick={handleResendOtp} 
+          disabled={isResending}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--primary-color)',
+            padding: 0,
+            margin: 0,
+            width: 'auto',
+            display: 'inline',
+            fontWeight: 500,
+            textDecoration: 'underline',
+            cursor: isResending ? 'not-allowed' : 'pointer',
+            opacity: isResending ? 0.6 : 1
+          }}
+        >
+          {isResending ? 'Sending...' : 'Resend OTP'}
+        </button>
+      </div>
     </div>
   );
 };
